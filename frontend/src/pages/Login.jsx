@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import login from "../assets/login.webp"
 import { loginUser } from '../redux/Slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { mergeCarts } from '../redux/Slices/CartSlice';
+import { mergeCarts } from '../redux/Slices/cartSlice';
 
 function Login() {
     const [email, setEmail] = useState('');
