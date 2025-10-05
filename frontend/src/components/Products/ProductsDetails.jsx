@@ -85,22 +85,21 @@ const ProductsDetails = ({ productId }) => {
         return <p className='text-red-500 text-center'>Error: {error}</p>
     }
 
-
-    return (
-        <div className=''> {/* Added min-h-screen and light background for better visuals */}
+ return (
+        <div className=''>
             {selectedProduct && (
-                <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-sm p-6 md:p-8"> {/* Added shadow and padding */}
+                <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-sm p-6 md:p-8">
 
-                    {/* ✅ MAIN PRODUCT LAYOUT: Grid for responsive columns */}
-                    {/* On mobile: 1 column (main image & details stack) */}
-                    {/* On md: 3 columns (thumb | main image | details) */}
+                    {/* MAIN PRODUCT LAYOUT: Grid for responsive columns */}
+                    {/* Mobile: 1 column stack | Desktop: 3 columns (thumb | main image | details) */}
                     <div className="grid grid-cols-1 md:grid-cols-[80px_1fr_1fr] lg:grid-cols-[100px_1.5fr_1fr] gap-6 lg:gap-8 items-start">
 
                         {/* ✅ 1. LEFT THUMBNAILS (Desktop Only) */}
+                        {/* On mobile, it's hidden (as intended). On desktop, it takes the first column. */}
                         <div className="hidden md:flex flex-col space-y-3">
                             {selectedProduct.images.map((image) => (
                                 <button
-                                    key={image._id || image.url} // Use a unique ID if available
+                                    key={image._id || image.url}
                                     onClick={() => setMainImage(image.url)}
                                     className={`w-20 h-20 overflow-hidden rounded-lg border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-black ${mainImage === image.url ? "border-black shadow-md" : "border-gray-200 hover:border-gray-400"}`}
                                 >
@@ -114,7 +113,8 @@ const ProductsDetails = ({ productId }) => {
                         </div>
 
                         {/* ✅ 2. MAIN PRODUCT IMAGE */}
-                        <div className="relative aspect-square w-full overflow-hidden rounded-lg md:col-start-2 md:col-end-3"> {/* Main image takes the second column */}
+                        {/* Order 1 on mobile to be at the top. On desktop, it takes the second column. */}
+                        <div className="relative aspect-square w-full overflow-hidden rounded-lg md:col-start-2 md:col-end-3 order-1">
                             <img
                                 src={mainImage}
                                 alt={selectedProduct.name}
@@ -123,8 +123,9 @@ const ProductsDetails = ({ productId }) => {
                         </div>
 
                         {/* ✅ 3. MOBILE THUMBNAIL SCROLL (Mobile Only) */}
-                        {/* Positioned *below* the main image on mobile */}
-                        <div className="md:hidden flex overflow-x-auto space-x-3 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] order-last"> {/* order-last pushes it below the main image and details on mobile */}
+                        {/* Change: Set order-2 on mobile so it's directly below the main image (order-1). */}
+                        {/* Removing the original `order-last` and replacing it with explicit `order-2`. */}
+                        <div className="md:hidden flex overflow-x-auto space-x-3 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] order-2">
                             {selectedProduct.images.map((image) => (
                                 <button
                                     key={image._id || image.url}
@@ -140,8 +141,9 @@ const ProductsDetails = ({ productId }) => {
                             ))}
                         </div>
 
-                        {/* ✅ 4. PRODUCT DETAILS SECTION (takes the third column on desktop, stacks on mobile) */}
-                        <div className="md:col-start-3 md:col-end-4 flex flex-col">
+                        {/* ✅ 4. PRODUCT DETAILS SECTION (Desktop: third column | Mobile: stacks below thumbnails) */}
+                        {/* Change: Set order-3 on mobile so it comes after the image and mobile thumbnails. */}
+                        <div className="md:col-start-3 md:col-end-4 flex flex-col order-3">
                             <h1 className="text-2xl md:text-3xl font-bold mb-2">
                                 {selectedProduct.name}
                             </h1>
@@ -195,13 +197,11 @@ const ProductsDetails = ({ productId }) => {
 
                             {/* Quantity & Add to Cart */}
                             <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                                <div className="flex items-center border border-gray-300 rounded-lg">
+                                <div className="flex items-center border border-gray-300 rounded-lg w-fit">
                                     <button onClick={() => handleQuantityChange("minus")} className='px-4 py-2 text-lg text-gray-600 rounded-l-lg hover:bg-gray-100'>-</button>
                                     <span className='px-5 text-lg font-medium'>{quantity}</span>
                                     <button onClick={() => handleQuantityChange("plus")} className='px-4 py-2 text-lg text-gray-600 rounded-r-lg hover:bg-gray-100'>+</button>
                                 </div>
-
-
 
                                 <button
                                     onClick={handleAddToCart}
@@ -213,7 +213,7 @@ const ProductsDetails = ({ productId }) => {
 
 
                             {/* Characteristics Table */}
-                            <div className="mt-auto pt-6 border-t border-gray-200 text-gray-700"> {/* mt-auto pushes it to the bottom of the column */}
+                            <div className="mt-auto pt-6 border-t border-gray-200 text-gray-700">
                                 <h3 className="text-lg font-semibold mb-3">Characteristics:</h3>
                                 <table className='w-full text-left text-sm text-gray-600'>
                                     <tbody>
@@ -235,7 +235,8 @@ const ProductsDetails = ({ productId }) => {
                         </div>
 
                         {/* You May Also Like Section - Spans full width below the three columns on desktop */}
-                        <div className="md:col-span-3 mt-12 pt-8 border-t border-gray-200">
+                        {/* Ensure this is order-4 on mobile to come last. */}
+                        <div className="md:col-span-3 mt-12 pt-8 border-t border-gray-200 order-4">
                             <h2 className="text-2xl text-center font-bold mb-6">
                                 You May Also Like
                             </h2>
@@ -246,6 +247,10 @@ const ProductsDetails = ({ productId }) => {
             )}
         </div>
     );
+}
+
+export default ProductsDetails
+
 }
 
 export default ProductsDetails
