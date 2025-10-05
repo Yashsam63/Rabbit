@@ -7,7 +7,7 @@ import { registerUser } from '../redux/Slices/authSlice';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { mergeCarts } from '../redux/Slices/CartSlice';
+import { mergeCarts } from '../redux/Slices/cartSlice';
 
 
 function Register() {
