@@ -85,7 +85,8 @@ const ProductsDetails = ({ productId }) => {
         return <p className='text-red-500 text-center'>Error: {error}</p>
     }
 
- return (
+
+    return (
         <div className=''>
             {selectedProduct && (
                 <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-sm p-6 md:p-8">
@@ -247,10 +248,6 @@ const ProductsDetails = ({ productId }) => {
             )}
         </div>
     );
-}
-
-export default ProductsDetails
-
 }
 
 export default ProductsDetails
