@@ -40,7 +40,8 @@ const EditProductPage = () => {
 
     useEffect(() => {
         if (selectedProduct) {
-            setProductData(selectedProduct);
+            // Ensure selectedProduct is spread into setProductData
+            setProductData(selectedProduct); 
         }
     }, [selectedProduct]);
 
@@ -62,7 +63,6 @@ const EditProductPage = () => {
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-
                     }
                 });
             setProductData((prevData) => ({
@@ -71,18 +71,29 @@ const EditProductPage = () => {
             }));
             setUploading(false);
             // console.log("Upload response:", data);
+            
+            // Clear the file input after successful upload
+            e.target.value = null; 
 
         } catch (error) {
             console.error("Error uploading image:", error);
             setUploading(false);
         }
     };
+    
+    // ⭐ NEW FUNCTION: Handler for deleting an image
+    const handleImageDelete = (urlToDelete) => {
+        setProductData((prevData) => ({
+            ...prevData,
+            images: prevData.images.filter(image => image.url !== urlToDelete),
+        }));
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        // The id is already destructured from useParams
         dispatch(updateProduct({ id, productData }));
         navigate('/admin/products');
-        // You can implement submission logic here (e.g., send to API)
     };
 
     if (loading) return <p>Loading...</p>;
@@ -209,14 +220,26 @@ const EditProductPage = () => {
                     <label className="block font-semibold mb-2">Upload Images</label>
                     <input type="file" onChange={handleImagesUpload} />
                     {uploading && <p>Uploading image...</p>}
-                    <div className="flex gap-4 mt-4">
-                        {productData.images.map((images, index) => (
-                            <div key={index}>
+                    <div className="flex flex-wrap gap-4 mt-4">
+                        {productData.images.map((image, index) => (
+                            // ⭐ MODIFIED: Added a delete button container
+                            <div key={index} className="relative w-20 h-20 group">
                                 <img
-                                    src={images.url}
-                                    alt={images.altText || "product image"}
-                                    className="w-20 h-20 object-cover rounded-md shadow-md"
+                                    src={image.url}
+                                    alt={image.altText || "product image"}
+                                    className="w-full h-full object-cover rounded-md shadow-md"
                                 />
+                                {/* ⭐ DELETE BUTTON */}
+                                <button
+                                    type="button"
+                                    onClick={() => handleImageDelete(image.url)}
+                                    className="absolute top-0 right-0 transform translate-x-1/3 -translate-y-1/3 
+                                               bg-red-500 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center 
+                                               text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity"
+                                    aria-label="Delete image"
+                                >
+                                    &times;
+                                </button>
                             </div>
                         ))}
                     </div>
