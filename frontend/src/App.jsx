@@ -19,7 +19,6 @@ import ProductsMangement from './components/Admin/ProductsMangement'
 import EditProductPage from './components/Admin/EditProductPage'
 import OrderManegment from './components/Admin/OrderManegment'
 import ProductRoutes from './components/Common/ProtectedRoute'
-import MakeItYours from './components/Common/MakeItYours'
 
 import { Provider } from 'react-redux'
 import store from './redux/store'
@@ -32,7 +31,6 @@ const App = () => {
           future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
 
           <Toaster position="top-right" />
-          <MakeItYours />
           <Routes>
             <Route path='/' element={<UserLayout />}>
               <Route index element={<Home />} />

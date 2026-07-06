@@ -1,59 +1,50 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { brandConfig } from "../config/brand";
 
-// Holds the live brand identity (name + colour) shared across the whole app.
-// Defaults come from src/config/brand.js; the "Make it yours" widget can
-// override them at runtime, and the choice is remembered via localStorage.
-const STORAGE_KEY = "rabbit-brand";
+// Lets the storefront be re-branded when it is embedded as a live preview on
+// qweblo's "Work" section. The brand name arrives from OUTSIDE — never from a
+// control on this page:
+//   1. `?brand=<name>` query param  → initial paint (e.g. /?brand=yash)
+//   2. postMessage from the host page: { type: "murzban:brand", name }
+//      → live, no reload (qweblo broadcasts this as you type)
+// With neither, it falls back to the default in config/brand.js ("Rabbit").
+const DEFAULT_BRAND = brandConfig.name;
 
-const BrandContext = createContext(null);
+const BrandContext = createContext({ name: DEFAULT_BRAND });
 
-export const useBrand = () => {
-  const ctx = useContext(BrandContext);
-  if (!ctx) throw new Error("useBrand must be used within a BrandProvider");
-  return ctx;
-};
-
-function loadSaved() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
+export const useBrand = () => useContext(BrandContext);
 
 export function BrandProvider({ children }) {
-  const saved = loadSaved();
-  const [name, setName] = useState(saved?.name || brandConfig.name);
-  const [color, setColor] = useState(saved?.color || brandConfig.primaryColor);
+  const [name, setName] = useState(DEFAULT_BRAND);
 
-  // expose the brand colour to Tailwind via the --brand-color CSS variable
   useEffect(() => {
-    document.documentElement.style.setProperty("--brand-color", color);
-  }, [color]);
+    // 1) initial paint — read ?brand= from the URL
+    try {
+      const q = new URLSearchParams(window.location.search).get("brand");
+      if (q && q.trim()) setName(q.trim());
+    } catch {
+      /* ignore malformed URL */
+    }
 
-  // keep the browser tab title in sync with the brand name
+    // 2) live updates — host page (qweblo) broadcasts the typed name.
+    //    Same message type Murzban uses, so one broadcast rebrands every demo.
+    const onMessage = (e) => {
+      const data = e.data;
+      if (data && typeof data === "object" && data.type === "murzban:brand") {
+        const next = typeof data.name === "string" ? data.name.trim() : "";
+        setName(next || DEFAULT_BRAND);
+      }
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
+
+  // keep the browser tab title in sync with the brand
   useEffect(() => {
-    document.title = name || brandConfig.name;
+    document.title = name || DEFAULT_BRAND;
   }, [name]);
 
-  // persist the rebrand so it survives page reloads
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ name, color }));
-    } catch {
-      /* storage unavailable — ignore */
-    }
-  }, [name, color]);
-
-  const reset = () => {
-    setName(brandConfig.name);
-    setColor(brandConfig.primaryColor);
-  };
-
-  const value = { name, setName, color, setColor, reset, config: brandConfig };
-  return <BrandContext.Provider value={value}>{children}</BrandContext.Provider>;
+  return <BrandContext.Provider value={{ name }}>{children}</BrandContext.Provider>;
 }
 
 export default BrandProvider;
