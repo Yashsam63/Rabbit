@@ -2,12 +2,14 @@ import React from 'react'
 import { FaBoxOpen, FaClipboardList, FaSignOutAlt, FaStore, FaUser } from 'react-icons/fa'
 import { useDispatch } from 'react-redux'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { logout } from '../../redux/Slices/authSlice' 
+import { logout } from '../../redux/Slices/authSlice'
 import { clearCart } from '../../redux/Slices/cartSlice'
+import { useBrand } from '../../context/BrandContext'
 
 const AdminSidebar = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
+    const { name } = useBrand();
 
     const handleLogout = () => {
         dispatch(logout());
@@ -17,7 +19,7 @@ const AdminSidebar = () => {
     return (
         <div className='p-6'>
             <div className="mb-6">
-                <Link to="/admin" className='text-2xl font-medium' >Rabbit</Link>
+                <Link to="/admin" className='text-2xl font-medium' >{name}</Link>
             </div>
             <h2 className="text-xl font-medium mb-6 text-center">Admin Dashboard</h2>
             <nav className="flex flex-col space-y-2">

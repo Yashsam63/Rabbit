@@ -5,6 +5,7 @@ import SearchBar from './SearchBar'
 import CartDrawer from '../Layout/CartDrawer'
 import { IoMdClose } from 'react-icons/io'
 import { useSelector } from 'react-redux'
+import { useBrand } from '../../context/BrandContext'
 
 function Navbar() {
 
@@ -12,6 +13,7 @@ function Navbar() {
     const [navDrawerOpen, setNavDrawerOpen] = useState(false)
     const { cart } = useSelector((state) => state.cart);
     const { user } = useSelector((state) => state.auth);
+    const { name } = useBrand();
 
     const cartItemCount = cart?.products?.reduce((total, product) => total + product.quantity, 0) || 0;
 
@@ -30,7 +32,7 @@ function Navbar() {
                 {/* Left Logo */}
                 <div>
                     <Link to='/' className='text-2xl font-medium'>
-                        Rabbit
+                        {name}
                     </Link>
                 </div>
 
@@ -62,7 +64,7 @@ function Navbar() {
                     <button onClick={toggleCartDrawer} className='relative hover:text-black'>
                         <HiOutlineShoppingBag className='h-6 w-6 text-gray-700' />
                         {cartItemCount > 0 && (
-                            <span className='absolute -top-1  bg-rabbit-red text-white text-xs rounded-full px-2 py-0.5  '>{cartItemCount}</span>
+                            <span className='absolute -top-1  bg-brand text-white text-xs rounded-full px-2 py-0.5  '>{cartItemCount}</span>
                         )}
                     </button>
                     {/* search */}

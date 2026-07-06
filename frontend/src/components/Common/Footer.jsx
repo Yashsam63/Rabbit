@@ -4,8 +4,11 @@ import { RiTwitterXLine } from 'react-icons/ri'
 import { TbBrandMeta } from 'react-icons/tb'
 import { FiPhoneCall } from 'react-icons/fi'
 import { Link } from "react-router-dom"
+import { useBrand } from '../../context/BrandContext'
+import { brandConfig } from '../../config/brand'
 
 function Footer() {
+    const { name } = useBrand();
     return (
         <div>
             <footer className="border-t py-12">
@@ -81,26 +84,26 @@ function Footer() {
                     <div>
                         <h3 className="text-lg text-gray-800 mb-4">Follow Us</h3>
                         <div className="flex items-center space-x-4 mb-6 ">
-                            <a href="https://www.facebook.com" target='_blank' rel="noopener noreferrer" className='hover:text-gray-500'>
+                            <a href={brandConfig.socials.facebook} target='_blank' rel="noopener noreferrer" className='hover:text-gray-500'>
                             <TbBrandMeta className='h-5 w-5'/>
                             </a>
-                            <a href="https://www.facebook.com" target='_blank' rel="noopener noreferrer" className='hover:text-gray-500'>
+                            <a href={brandConfig.socials.instagram} target='_blank' rel="noopener noreferrer" className='hover:text-gray-500'>
                             <IoLogoInstagram className='h-5 w-5'/>
                             </a>
-                            <a href="https://www.facebook.com" target='_blank' rel="noopener noreferrer" className='hover:text-gray-500'>
+                            <a href={brandConfig.socials.twitter} target='_blank' rel="noopener noreferrer" className='hover:text-gray-500'>
                             <RiTwitterXLine className='h-4 w-4'/>
                             </a>
                         </div>
                         <p className="text-gary-500">Call us</p>
                         <p>
                             <FiPhoneCall className='inline-block mr-2'/>
-                            +91 1234567890
+                            {brandConfig.phone}
                         </p>
                     </div>
                 </div>
                 {/* footer-bottom */}
                 <div className="container mx-auto mt-12 px-4 lg:px-0 border-t border-gray-300 pt-6">
-                    <p className='text-gray-500 text-sm tracking-tighter text-center'> © 2025, CompileTab. All Rights Reserved. </p>
+                    <p className='text-gray-500 text-sm tracking-tighter text-center'> © {brandConfig.copyrightYear}, {name}. All Rights Reserved. </p>
                 </div>
             </footer>
         </div>

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    /* default brand colour — overridden live by the "Make it yours" widget */
+    --brand-color: #ea2e0e;
+}
+
 #root {
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;

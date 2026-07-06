@@ -7,7 +7,9 @@ export default {
   theme: {
     extend: {
       colors:{
-        "rabbit-red":'#ea2e0e'
+        "rabbit-red":'#ea2e0e',
+        // live-updatable brand colour (driven by the "Make it yours" widget)
+        "brand":'var(--brand-color)'
       }
     },
   },
